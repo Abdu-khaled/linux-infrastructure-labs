@@ -1,0 +1,20 @@
+Vagrant.configure("2") do |config|
+
+    config.vm.box = "centos/stream9"
+    config.ssh.insert_key = false
+    
+    # DHCP Server
+    config.vm.define "dhcp-server" do |server|
+      server.vm.hostname = "dhcp-server"
+      server.vm.network  "private_network", 
+       ip: "192.168.56.10"
+    end 
+
+    # DHCP Client
+    config.vm.define "dhcp-client" do |client|
+      client.vm.hostname = "dhcp-client"
+      client.vm.network "private_network", type: "dhcp"
+    end
+
+end
+
