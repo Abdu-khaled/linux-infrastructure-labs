@@ -1,0 +1,4 @@
+- name: Restart DHCP
+  systemd:
+    name: dhcpd
+    state: restarted

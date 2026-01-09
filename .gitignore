@@ -1,0 +1,27 @@
+# Ignore Vagrant local files
+.vagrant/
+
+# Ignore Ansible artifacts
+*.retry
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore log files
+*.log
+
+# Ignore SSH keys and sensitive files
+*.pem
+*.key
+
+# Ignore editor/project files
+*.swp
+*.swo
+.idea/
+.vscode/
