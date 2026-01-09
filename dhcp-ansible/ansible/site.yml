@@ -1,0 +1,11 @@
+- name: Setup DHCP Server
+  hosts: dhcp_server
+  become: true
+  roles:
+    - dhcp_server
+
+- name: Setup DHCP Client
+  hosts: dhcp_client
+  become: true
+  roles:
+    - dhcp_client

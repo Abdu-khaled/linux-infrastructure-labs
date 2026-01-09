@@ -1,0 +1,90 @@
+- name: Install DHCP server
+  dnf:
+    name: dhcp-server
+    state: present
+
+
+- name: Configure DHCP 
+  template:
+    src: dhcpd.conf.j2
+    dest: /etc/dhcp/dhcpd.conf
+    mode: '0644'
+  notify: Restart DHCP
+
+
+- name: Configure DHCP interface
+  copy:
+    content: |
+      # Command line options here
+      DHCPDARGS="eth1"
+    dest: /etc/sysconfig/dhcpd
+    mode: '0644'
+
+
+- name: Install firewalld
+  dnf:
+    name: firewalld
+    state: present
+
+
+- name: Start and enable firewalld
+  systemd:
+    name: firewalld
+    enabled: true
+    state: started
+
+
+- name: Allow DHCP in firewall
+  firewalld:
+    service: dhcp
+    permanent: true
+    immediate: true
+    state: enabled
+
+
+- name: Validate DHCP configuration
+  command: dhcpd -t -cf /etc/dhcp/dhcpd.conf
+  register: dhcpd_test
+  failed_when: false
+  changed_when: false
+
+
+- name: Display DHCP config test results
+  debug:
+    var: dhcpd_test
+
+
+- name: Ensure DHCP lease file exists
+  file:
+    path: /var/lib/dhcpd/dhcpd.leases
+    state: touch
+    mode: '0644'
+    modification_time: preserve
+    access_time: preserve
+
+
+- name: Try to start DHCP service
+  systemd:
+    name: dhcpd
+    enabled: true
+    state: started
+  register: dhcpd_start
+  failed_when: false
+
+
+- name: Get DHCP service status if failed
+  command: journalctl -xeu dhcpd.service -n 50 --no-pager
+  when: dhcpd_start.failed
+  register: dhcpd_logs
+
+
+- name: Display DHCP service logs
+  debug:
+    var: dhcpd_logs.stdout_lines
+  when: dhcpd_start.failed
+
+
+- name: Fail if DHCP service couldn't start
+  fail:
+    msg: "DHCP service failed to start. Check logs above."
+  when: dhcpd_start.failed

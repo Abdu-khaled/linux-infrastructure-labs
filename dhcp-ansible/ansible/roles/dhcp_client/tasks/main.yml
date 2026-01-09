@@ -1,0 +1,11 @@
+- name: Ensure NetworkManager is running
+  systemd:
+    name: NetworkManager
+    state: started
+    enabled: true
+
+- name: Restart networking to request DHCP
+  shell: sleep 2 && nmcli connection reload && nmcli connection up "System eth1"
+  async: 30
+  poll: 0
+  ignore_errors: true
