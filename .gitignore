@@ -19,7 +19,7 @@ Thumbs.db
 # Ignore SSH keys and sensitive files
 *.pem
 *.key
-
+*.csr
 # Ignore editor/project files
 *.swp
 *.swo
