@@ -20,6 +20,7 @@ Thumbs.db
 *.pem
 *.key
 *.csr
+*.crt
 # Ignore editor/project files
 *.swp
 *.swo
